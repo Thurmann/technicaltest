@@ -13,14 +13,15 @@ class SimpleCard(val suit: String, val cardString: String) {
 
     override fun equals(other: Any?): Boolean {
         if (other is SimpleCard) {
-            return suitType == other.suitType && cardValue == other.cardValue
+            return suitType == other.suitType && cardString == other.cardString
         }
         return false
     }
 
     override fun hashCode(): Int {
         var result = suitType.hashCode()
-        result = 31 * result + cardValue
+        val valueResult = cardString.hashCode()
+        result = 31 * result + valueResult
         return result
     }
 }

@@ -7,7 +7,7 @@ import com.thurmann.technicaltest.model.cardgame.exceptions.CardNotDrawnExceptio
 import com.thurmann.technicaltest.model.simplecarddeck.SimpleCard
 import com.thurmann.technicaltest.model.util.splitInHalf
 
-class BlackJackGameService(
+class BlackJackGame(
     private val predeterminedCards: MutableSet<String>? = null,
     private val playerName: String = "sam",
     val blackJackPlayer: Player = Player(playerName),
@@ -51,21 +51,26 @@ class BlackJackGameService(
 
     private fun printScore(winner: Player): String {
         val sb = StringBuilder()
-        sb.appendLine(winner)
+        sb.appendLine(winner.name)
         for (player in cardGame.players) {
-            sb.append("${player.key.name}: ${player.key.hand}")
+            sb.appendLine("${player.key.name}: ${player.key.hand}")
         }
+        print(sb.toString())
         return sb.toString()
     }
 
     private fun drawCard(card: SimpleCard) =
-        card
+        if (cardGame.cardDeck.cards.remove(card))
+            card
+        else
+            throw CardNotDrawnException()
+    
 
     fun playGame(): Player? {
-        takeTurn(blackJackPlayer)
-        takeTurn(dealer)
-        takeTurn(blackJackPlayer)
-        takeTurn(dealer)
+        takeTurn(blackJackPlayer, getNextPredeterminedCard())
+        takeTurn(dealer, getNextPredeterminedCard())
+        takeTurn(blackJackPlayer, getNextPredeterminedCard())
+        takeTurn(dealer, getNextPredeterminedCard())
         for (player in cardGame.players.keys) {
             if (gameIsOver(player))
                 return endGame()
@@ -80,9 +85,12 @@ class BlackJackGameService(
     }
 
     private fun getWinner(): Player {
-        return cardGame.players.keys.filter { !cardGame.hasPlayerLostGame(it) }
+        val winners = cardGame.players.keys.filter { it.playerResult == PlayerResult.WON }
+        if(winners.isNotEmpty())
+            return winners.first()
+        return cardGame.players.keys.filter { it.playerResult != PlayerResult.LOST }
             .map { Pair(it, getScore(it)) }
-            .sortedBy { pair -> pair.second }
+            .sortedBy { pair -> pair.second }.reversed()
             .first().first
     }
 
@@ -122,12 +130,9 @@ class BlackJackGameService(
     fun drawCard(cardString: String): SimpleCard {
         val suitAndCard = cardString.splitInHalf()
         val card = SimpleCard(suitAndCard.first, suitAndCard.second)
-        if (cardGame.cardDeck.cards.remove(card))
-            return drawCard(card)
-        else
-            throw CardNotDrawnException()
+        return drawCard(card)
     }
-    
+
     private fun getNextPredeterminedCard(): String? {
         if (predeterminedCards != null && predeterminedCards.isNotEmpty()) {
             val cardString = predeterminedCards.first()

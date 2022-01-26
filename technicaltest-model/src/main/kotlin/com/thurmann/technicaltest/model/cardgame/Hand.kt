@@ -11,4 +11,13 @@ class Hand {
     fun isEmpty() = cards.isEmpty()
     
     fun value() = cards.sumOf { it.cardValue }
+
+    override fun toString(): String {
+        val sb = StringBuilder()
+        for (card in cards) {
+            sb.append(card)
+            sb.append(" ")
+        }
+        return sb.toString()
+    }
 }

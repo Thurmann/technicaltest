@@ -27,7 +27,7 @@ class SimpleCardDeck {
     }
     
     fun drawCard(): SimpleCard {
-        return cards.removeLast()
+        return cards.last()
     }
     
     fun size() = cards.size
