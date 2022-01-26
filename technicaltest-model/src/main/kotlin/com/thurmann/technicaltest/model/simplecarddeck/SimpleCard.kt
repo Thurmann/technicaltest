@@ -2,8 +2,10 @@ package com.thurmann.technicaltest.model.simplecarddeck
 
 import com.thurmann.technicaltest.model.util.decodeCardValue
 import com.thurmann.technicaltest.model.util.decodeSuit
+import com.thurmann.technicaltest.model.util.splitInHalf
 
 class SimpleCard(val suit: String, val cardString: String) {
+    
     val suitType = decodeSuit(suit)
     val cardValue = decodeCardValue(cardString)
 
@@ -24,4 +26,9 @@ class SimpleCard(val suit: String, val cardString: String) {
         result = 31 * result + valueResult
         return result
     }
+}
+
+fun simpleCard(cardString: String): SimpleCard {
+    val suitAndCard = cardString.splitInHalf()
+    return SimpleCard(suitAndCard.first, suitAndCard.second)
 }

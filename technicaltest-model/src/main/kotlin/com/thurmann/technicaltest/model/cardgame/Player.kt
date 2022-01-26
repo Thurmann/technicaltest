@@ -6,6 +6,12 @@ class Player(val name: String) {
     val hand = Hand()
     var playerResult = PlayerResult.PENDING
 
-    fun getCard(card: SimpleCard) =
+    fun addCardToHand(card: SimpleCard) =
         hand.addCard(card)
+    
+    fun getScore()= 
+        hand.value()
+
+    fun participatingInGame() =
+        playerResult == PlayerResult.PENDING
 }

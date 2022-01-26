@@ -18,6 +18,7 @@ class Hand {
             sb.append(card)
             sb.append(" ")
         }
+        sb.append(" = " + value())
         return sb.toString()
     }
 }

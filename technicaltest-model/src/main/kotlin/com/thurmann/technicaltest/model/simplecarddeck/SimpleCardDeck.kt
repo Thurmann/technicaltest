@@ -1,5 +1,6 @@
 package com.thurmann.technicaltest.model.simplecarddeck
 
+import com.thurmann.technicaltest.model.cardgame.exceptions.CardNotDrawnException
 import com.thurmann.technicaltest.model.util.swap
 
 class SimpleCardDeck {
@@ -16,7 +17,7 @@ class SimpleCardDeck {
         }
         return shuffle(mutableList)
     }
-    
+
     private fun shuffle(mutableList: MutableList<SimpleCard>): MutableList<SimpleCard> {
         for (n in 0..51) {
             val range = 0..51
@@ -25,10 +26,18 @@ class SimpleCardDeck {
         }
         return mutableList
     }
+
+    private fun drawCard(card: SimpleCard) =
+        if (cards.remove(card))
+            card
+        else
+            throw CardNotDrawnException()
+
+    fun drawCardFromDeck() =
+        drawCard(cards.last())
     
-    fun drawCard(): SimpleCard {
-        return cards.last()
-    }
-    
+    fun drawPredeterminedCard(card: SimpleCard) =
+        drawCard(card)
+
     fun size() = cards.size
 }
